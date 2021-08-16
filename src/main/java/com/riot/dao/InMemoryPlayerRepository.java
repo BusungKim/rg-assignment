@@ -1,6 +1,7 @@
 package com.riot.dao;
 
 import com.riot.exception.InvalidArgumentException;
+import com.riot.exception.NoDataException;
 import com.riot.model.Player;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,8 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     @Override
     public void deletePlayer(final long playerID) {
-        players.removeIf(p -> p.getId() == playerID);
+        final Player player = findPlayer(playerID).orElseThrow(() -> new NoDataException(String.format("No player(%d) exists", playerID)));
+        players.remove(player);
     }
 
     @Override

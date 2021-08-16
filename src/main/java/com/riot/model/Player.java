@@ -17,8 +17,10 @@ public class Player implements Comparable<Player> {
         }
         if (this.mmr != player.getMmr()) {
             return this.mmr > player.getMmr() ? 1 : -1;
-
         }
-        return this.id > player.getId() ? 1 : -1;
+        if (this.id != player.getId()) {
+            return this.id > player.getId() ? 1 : -1;
+        }
+        return 0;
     }
 }
