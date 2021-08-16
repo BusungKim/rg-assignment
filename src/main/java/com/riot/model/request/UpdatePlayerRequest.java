@@ -1,0 +1,17 @@
+package com.riot.model.request;
+
+import com.riot.model.Tier;
+import lombok.Data;
+
+import javax.validation.constraints.Min;
+
+@Data
+public class UpdatePlayerRequest {
+
+    private long playerID;
+
+    @Min(value = 0, message = "MMR must be positive number")
+    private Integer mmr;
+
+    private Tier tier;
+}
