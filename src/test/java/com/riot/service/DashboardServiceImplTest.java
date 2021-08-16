@@ -146,7 +146,7 @@ class DashboardServiceImplTest {
         verify(playerRepository).addPlayer(addedPlayer);
 
         final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(addedPlayer).setRank(playerRank);
-        final PlayerResponse expected = new PlayerResponse().setPlayer(rankedPlayer);
+        final PlayerResponse expected = new PlayerResponse().setRankedPlayer(rankedPlayer);
 
         assertEquals(expected, ret);
     }
@@ -176,7 +176,7 @@ class DashboardServiceImplTest {
         verify(playerRepository).updatePlayer(player);
 
         final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(player).setRank(200_000);
-        assertEquals(new PlayerResponse().setPlayer(rankedPlayer), ret);
+        assertEquals(new PlayerResponse().setRankedPlayer(rankedPlayer), ret);
     }
 
     @Test
@@ -199,7 +199,7 @@ class DashboardServiceImplTest {
         verify(playerRepository).updatePlayer(player);
 
         final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(player).setRank(10);
-        assertEquals(new PlayerResponse().setPlayer(rankedPlayer), ret);
+        assertEquals(new PlayerResponse().setRankedPlayer(rankedPlayer), ret);
     }
 
     @Test

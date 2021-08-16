@@ -7,5 +7,5 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class PlayerResponse {
-    private RankedPlayer player;
+    private RankedPlayer rankedPlayer;
 }

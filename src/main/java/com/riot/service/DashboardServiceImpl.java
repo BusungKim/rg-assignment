@@ -89,7 +89,7 @@ public class DashboardServiceImpl implements DashboardService {
         final Player player = new Player().setId(newPlayerID).setMmr(addPlayerRequest.getMmr()).setTier(tier);
         playerRepository.addPlayer(player);
 
-        return new PlayerResponse().setPlayer(convertToRankedPlayer(player));
+        return new PlayerResponse().setRankedPlayer(convertToRankedPlayer(player));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         playerRepository.updatePlayer(player);
 
-        return new PlayerResponse().setPlayer(convertToRankedPlayer(player));
+        return new PlayerResponse().setRankedPlayer(convertToRankedPlayer(player));
     }
 
     @Override
