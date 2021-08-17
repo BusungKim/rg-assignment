@@ -95,21 +95,22 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public PlayerResponse updatePlayer(@NonNull final UpdatePlayerRequest updatePlayerRequest) {
         final Player player = getPlayer(updatePlayerRequest.getPlayerID());
+        final Player newPlayer = new Player().setId(player.getId()).setMmr(player.getMmr()).setTier(player.getTier());
 
         if (updatePlayerRequest.getMmr() != null) {
-            player.setMmr(updatePlayerRequest.getMmr());
+            newPlayer.setMmr(updatePlayerRequest.getMmr());
         }
 
         if (updatePlayerRequest.getTier() == null) {
             final Tier tier = getTier(updatePlayerRequest.getMmr());
-            player.setTier(tier);
+            newPlayer.setTier(tier);
         } else {
-            player.setTier(updatePlayerRequest.getTier());
+            newPlayer.setTier(updatePlayerRequest.getTier());
         }
 
-        playerRepository.updatePlayer(player);
+        playerRepository.updatePlayer(newPlayer);
 
-        return new PlayerResponse().setRankedPlayer(convertToRankedPlayer(player));
+        return new PlayerResponse().setRankedPlayer(convertToRankedPlayer(newPlayer));
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.riot.model.response.TierResponse;
 import com.riot.model.response.TopPlayersResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -159,10 +159,10 @@ class DashboardServiceImplTest {
         final int updatedMMR = 1050;
         final Tier originalTier = Tier.SILVER;
 
-        final Player player = spy(new Player().setId(playerID).setMmr(originalMMR).setTier(originalTier));
+        final Player player = new Player().setId(playerID).setMmr(originalMMR).setTier(originalTier);
         when(playerRepository.findPlayer(playerID)).thenReturn(Optional.of(player));
         when(playerRepository.getRank(updatedMMR)).thenReturn(200_000);
-        when(playerRepository.getRank(player)).thenReturn(200_000);
+        when(playerRepository.getRank(any(Player.class))).thenReturn(200_000);
         when(playerRepository.getTotalPlayerCount()).thenReturn(1_000_000);
 
         final UpdatePlayerRequest updatePlayerRequest = new UpdatePlayerRequest().setPlayerID(playerID).setMmr(updatedMMR);
@@ -171,11 +171,14 @@ class DashboardServiceImplTest {
         final PlayerResponse ret = service.updatePlayer(updatePlayerRequest);
 
         // then
-        verify(player).setMmr(updatedMMR);
-        verify(player).setTier(Tier.GOLD);
-        verify(playerRepository).updatePlayer(player);
+        final ArgumentCaptor<Player> argumentCaptor = ArgumentCaptor.forClass(Player.class);
+        verify(playerRepository).updatePlayer(argumentCaptor.capture());
 
-        final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(player).setRank(200_000);
+        final Player newPlayer = argumentCaptor.getValue();
+        assertEquals(updatedMMR, newPlayer.getMmr());
+        assertEquals(Tier.GOLD, newPlayer.getTier());
+
+        final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(newPlayer).setRank(200_000);
         assertEquals(new PlayerResponse().setRankedPlayer(rankedPlayer), ret);
     }
 
@@ -185,9 +188,9 @@ class DashboardServiceImplTest {
         final long playerID = 123456789L;
         final int originalMMR = 1000;
 
-        final Player player = spy(new Player().setId(playerID).setMmr(originalMMR).setTier(Tier.MASTER));
+        final Player player = new Player().setId(playerID).setMmr(originalMMR).setTier(Tier.MASTER);
         when(playerRepository.findPlayer(playerID)).thenReturn(Optional.of(player));
-        when(playerRepository.getRank(player)).thenReturn(10);
+        when(playerRepository.getRank(any(Player.class))).thenReturn(10);
 
         final UpdatePlayerRequest updatePlayerRequest = new UpdatePlayerRequest().setPlayerID(playerID).setTier(Tier.CHALLENGER);
 
@@ -195,10 +198,13 @@ class DashboardServiceImplTest {
         final PlayerResponse ret = service.updatePlayer(updatePlayerRequest);
 
         // then
-        verify(player).setTier(Tier.CHALLENGER);
-        verify(playerRepository).updatePlayer(player);
+        final ArgumentCaptor<Player> argumentCaptor = ArgumentCaptor.forClass(Player.class);
+        verify(playerRepository).updatePlayer(argumentCaptor.capture());
 
-        final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(player).setRank(10);
+        final Player newPlayer = argumentCaptor.getValue();
+        assertEquals(Tier.CHALLENGER, newPlayer.getTier());
+
+        final RankedPlayer rankedPlayer = new RankedPlayer().setPlayer(newPlayer).setRank(10);
         assertEquals(new PlayerResponse().setRankedPlayer(rankedPlayer), ret);
     }
 
