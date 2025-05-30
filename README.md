@@ -1,4 +1,4 @@
-## Riot Games Interview Assignment
+## Interview Assignment
 This is sample Create/Read/Update/Delete APIs for player rank based dashboard application.
 
 ## Implementation Details
